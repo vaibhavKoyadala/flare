@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ joker.belongs_to.name }}</title>
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/jquery_2.2.4.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/underscore_1.8.3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/backbone_1.3.3.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery_ajaxform.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery_qrcode.js' %}"></script>
+
+    <link href='{% static "css/railwayfont.css" %}' rel='stylesheet' type='text/css'>
+
+
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
+    
+    <script type="text/javascript" src="{% static "flare/js/flare.js" %}"></script>
+
+    <style>
+        html, body{
+            height: 100%;
+			padding: 0 0 0 0;
+			margin: 0 0 0 0;
+        }
+        .chat-container{
+            max-width: 500px;
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+            bottom: 0;
+            height: 100%;
+            background-color; yellow;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        @media (min-width: 500px) {
+            .chat-container{
+                margin: auto;
+            }
+        }
+		#status-bar{
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			padding: 5px 5px 5px 5px;
+			background-color: #FFCC00;
+		}
+        
+        
+        #chat-header{
+            height: 40px;
+            border-bottom: thin solid black;
+        }
+        
+        #account-button{
+            font-size: x-large;
+            float: left;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 0 0 10px;
+        }
+        
+        
+        #file-messages-button{
+            float: right;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 10px 0 0;
+        }
+        
+
+        #chat-body{
+            
+            width: 100%;
+            height: 80%;
+            overflow-y: scroll;
+        }
+        #chat-body::-webkit-scrollbar {
+            display: none;
+        }
+        #chat-footer{
+            
+            position: absolute;
+			display: table-cell;
+			height: 50px;
+			vertical-align: middle;
+			bottom: 0px;
+            left: 0px;
+            right: 0px;
+            height: 40px;
+			padding: 0 0 0 0;
+			margin: 0 0 0 0;
+        }
+		#qrcode{
+			text-align: center;
+		}
+        #text-messages-content, #file-messages-content, #info-content{
+            list-style-type: none;
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+        }
+
+        .message {
+            clear: both;
+            float: left;
+            margin: 2px 0px 2px 10px;
+            font-size: medium;
+            position: relative;
+        }
+        .message .text{
+            
+            padding: 5px 8px 5px 8px;
+            
+            font-size: medium;
+			color: white;
+			background: white; /* For browsers that do not support gradients */
+			background: -webkit-linear-gradient(bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* For Safari 5.1 to 6.0 */
+			background: -o-linear-gradient(bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* For Opera 11.1 to 12.0 */
+			background: -moz-linear-gradient(bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* For Firefox 3.6 to 15 */
+			background: linear-gradient(to bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* Standard syntax */
+        }
+        .message-self .text{
+            
+            padding: 5px 8px 5px 8px;
+            font-size: medium;
+			color: white;
+			background: -webkit-linear-gradient(bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* For Safari 5.1 to 6.0 */
+			background: -o-linear-gradient(bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* For Opera 11.1 to 12.0 */
+			background: -moz-linear-gradient(bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* For Firefox 3.6 to 15 */
+			background: linear-gradient(to bottom right, rgba(000, 000, 000, 0.3), rgba(000, 000, 000, 0.15)); /* Standard syntax */
+        
+        }
+        .message .joker{
+			
+            padding: 0 0 2px 5px;
+            font-size: small;
+        }
+        .message-self {
+            clear: both;
+            float: right;
+            margin: 2px 10px 2px 0px;
+            color: white;
+            position: relative;
+            font-size: medium;
+        }
+        .message-info{
+            clear: both;
+            margin: auto;
+            display: block;
+            text-align: center;
+            background: transparent;
+            color: black;
+            position: relative;
+        }
+        .message-info:hover{
+            color: white;
+        }
+        .message p, .message-self p{
+            padding: 0 0 0 0;
+            margin: 0 0 0 0;
+        }
+        #text-message-input, #file-message-input{
+            
+           
+            width: 100%;
+        }
+        
+        #text-message-submit, #file-message-submit{
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 4px;
+			border: none;
+        }
+		
+        #text-message-submit:hover, #text-msg-submit:focus,
+        #file-message-submit:hover, #file-msg-submit:focus{
+            color: white;
+        }
+        
+		
+        /* The file messages */
+        .file-msg{
+            position: relative;
+            height: 150px;
+            width: 49%;
+			float: left;
+            display: table;
+            background: rgba(0, 0, 0, 0.5);
+			border: 2px solid rgba(0, 0, 0, 0.2);
+			margin-bottom: 2px;
+			color: white;
+        }
+		.file-msg:hover{
+			background: rgba(255, 255, 255, 0.5);
+			color: black;
+			
+			cursor: pointer;
+		}
+        .file-msg img{
+            max-width: 150px;
+            max-height: 150px;
+
+        }
+        .file-msg .center, span{
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .file-size{
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            text-align: center;
+            padding: 3px 3px 3px 3px;
+            background-color: rgba(10, 10, 10, 0.1);
+        }
+        #account-content{
+            padding: 10px 10px 10px 10px;
+        }
+        #account-content h5{
+            display: inline;
+        }
+        #log-out-btn{
+            float: right;
+        }
+		
+        
+       
+        .img-container {
+            background: rgba(72, 206, 197, 1);
+			background-image: url("{% static 'flare/images/blurry.jpg' %}");
+            position: absolute;
+			width: 100%;
+			height: 100%;
+            
+            background-size: cover;
+            z-index: -1;
+        }
+
+        
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        a:hover{
+            color: white;
+        }
+        
+        
+    </style>
+    <script>
+        
+    </script>
+</head>
+<body>
+    <!--<div class='background-blur'></div>--->
+    
+    <div class="img-container"></div>
+    
+    
+    <div class="chat-container">
+	<div id="status-bar">
+		Drat, your message could'nt be sent.
+	</div>
+        
+        
+        <div id="chat-header">
+            <span id="account-button" class="btn">
+                <a href="#account">{{ joker.flare.name }}</a>
+            </span>
+            <span id="file-messages-button" class="btn">
+                <a href="#file-messages">FILES</a>
+            </span>
+        </div>
+        
+
+        <div id="chat-body">
+            <div id="text-messages-content">
+			<!--
+                <div class="message">
+                    <p class="joker">Vaibhav</p>
+                    <p class="text">Hello.</p>
+                </div>
+                <div class="message-self">
+                    <p class="text">Hi</p>
+                </div>
+                <div class="message-info">
+                    <p>Vaibhav sent 'blurry.jpg'</p>
+                </div>
+			-->
+            </div>
+
+            <div id="file-messages-content">
+			<!--
+			   <div class="file-msg">
+                    <div class="center">
+                        <img src="blurry.jpg" >
+                    </div>
+                    <div class="file-size">3 KB</div>
+                </div>
+                <div class="file-msg">
+                    <span>corncob.txt</span>
+                    <div class="file-size">3 KB</div>
+                </div>
+			-->
+            </div>
+            <div id="account-content">
+                    <div>
+                        <h5>{{ joker.name }}</h5>
+                        <a href="logout" id="log-out-btn" class="button">Logout</a>
+                    </div>
+					<br>
+                    <div>
+                        <p>To add your friends, Share this link or the QR image below.<br>
+                        <span>(Don't forget to tell them the password)</span>
+						</p>
+						<div id="qrcode"></div>
+                    </div>
+            </div>
+        </div>
+        <div id="chat-footer">
+
+            <div id='text-messages-footer'>
+                <input type="text"  id="text-message-input">
+                <input type="submit" class="btn" id="text-message-submit" value="Send">
+            </div>
+
+            <div id='file-messages-footer'>
+				<form id="file-message-form" enctype="multipart/form-data">
+					<input type="file"  name="file" id="file-message-input">
+					<input type="submit" class="btn btn-primary" id="file-message-submit" value="Send">
+				</form>
+            </div>
+        </div>
+
+
+    </div>
+        
+
+        
+
+</body>
+</html>

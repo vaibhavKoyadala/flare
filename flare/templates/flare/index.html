@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Flare</title>
+    <style>
+        .center{
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+            text-align: center;
+        }
+        #typed-message{
+            text-align: center;
+            height: 20px;;
+        }
+        #description-parent{
+            padding-top: 20px;
+            height: 100px;
+        }
+        #description{
+            text-align: center;
+        }
+    </style>
+    {% load staticfiles %}
+    <script src='{% static "js/typed.js" %}'></script>
+    <script>
+        $(document).ready(function() {
+            $('#description').fadeOut()
+
+            $("#typed-message").typed({
+                strings: ["Hello^", "This^", "is", "Flare."],
+                typeSpeed: 0,
+                loop: false,
+                showCursor: false,
+                callback: function(){
+                    $('#description').fadeIn(2000, 'swing')
+                }
+            });
+
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="center">
+        <h2 id="typed-message">Flare.</h2>
+        <div id="description-parent">
+            <p id="description">
+                Flare lets you have <br>
+                quick online discussions, share files <br>
+                without an account
+            </p>
+        </div>
+        <a class="button" href="join"  >Join Flare</a>
+        <a class="button" href="create">Create Flare</a>
+    </div>
+{% endblock %}

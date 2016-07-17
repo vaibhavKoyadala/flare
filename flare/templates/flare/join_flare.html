@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Flare | Join</title>
+    <style>
+        .narrow h2{
+            display: inline;
+        }
+        .narrow *{
+            float: left;
+            clear: both;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="narrow">
+        <h2>Create a flare</h2>
+        <form class="form" method="POST">
+        {% csrf_token %}
+        {{ form.as_table }}
+    <br>
+    <input type="submit" value="Join">
+    </form>
+    </div>
+{% endblock %}
