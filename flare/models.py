@@ -14,16 +14,25 @@ class Flare(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     password = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+
 class Joker(models.Model):
     name = models.CharField(max_length=30)
     flare = models.ForeignKey(Flare)
     joined_on = models.DateTimeField(auto_now_add=True)
     last_active = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
 class TextMessage(models.Model):
     text = models.CharField(max_length=140)
     timestamp = models.DateTimeField(auto_now_add=True)
     joker = models.ForeignKey(Joker)
+
+    def __str__(self):
+        return self.text
 
 class FileMessage(models.Model):
     title = models.CharField(max_length=100)
@@ -35,6 +44,9 @@ class FileMessage(models.Model):
     def save(self, *args, **kwargs):
         self.size = self.file.size
         super(FileMessage, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
 
 class ImageMessage(models.Model):
     image = models.ImageField(upload_to='images')
@@ -103,3 +115,6 @@ class ImageMessage(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         return super(ImageMessage, self).delete(using, keep_parents)
+
+    def __str__(self):
+        return self.title

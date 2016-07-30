@@ -10,7 +10,7 @@ instance={
     views:{},
     routers: {}
 }
-log = console.log
+
 
 //  MODELS
 App.models.TextMessage = Backbone.Model.extend({
@@ -389,7 +389,9 @@ $(document).ready(function(){
 	
 	console.log($('').qrcode)
 	$('#qrcode').qrcode({
-		content: 'hey'
+		/*A hack: Use the element holding the flare's name to get the flare name*/
+		/*TODO: This ain't right. Add support in the API to get the current session's details.*/
+		text: 'http://www.' + $(location).attr('hostname') + '/join?flare="{}"'.replace('{}', $('#flarename').text())
 	})
 	showToast('', '')
 	console.log('Setup done !')

@@ -10,7 +10,8 @@ def index(request):
 @no_joker(on_fail=lambda: redirect(reverse_lazy('flare')))
 def join_flare(request):
     if request.method == 'GET':
-        form = forms.JoinFlareForm()
+        flare =  request.GET.get('flare', '')
+        form = forms.JoinFlareForm(initial={'flare_name': flare})
 
     elif request.method == 'POST':
         form = forms.JoinFlareForm(data=request.POST)
