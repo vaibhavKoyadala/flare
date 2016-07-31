@@ -20,10 +20,10 @@ App.models.TextMessage = Backbone.Model.extend({
     },
     send: function(){
         that = this
-        console.log(that.get('text'))
+        //console.log(that.get('text'))
         $.post( that.url, {text: that.get('text')},
                 function(data, status){
-                    console.log(data)
+                    //console.log(data)
                     that.set('uploaded', true)
                 })
     },
@@ -73,7 +73,7 @@ App.collections.TextMessages = Backbone.Collection.extend({
     url: 'api/messages',
     ajaxObj: null,
     fetch: function(){
-		console.log('checking  if null')
+		//console.log('checking  if null')
         // Return if a request is already running
         if(this.ajaxObj != null)return
         
@@ -81,14 +81,14 @@ App.collections.TextMessages = Backbone.Collection.extend({
         data = {}
         if(this.length){
             data['fetch_from'] = this.at(-1).get('timestamp').toISOString()
-			console.log('fetching from '+data['fetch_from'])
+			//console.log('fetching from '+data['fetch_from'])
         }
 		that = this
 		this.ajaxObj = $.ajax({
-			url, 
-			data, 
+			url: url,
+			data: data,
 			success: function(data, status){
-				console.log(data)
+				//console.log(data)
 				that.ajaxObj = null
 				_.forEach(data, function(obj){
 					this.add(new App.models.TextMessage(obj, {parse: true}))
@@ -100,10 +100,10 @@ App.collections.TextMessages = Backbone.Collection.extend({
 				showToast("Looks I can't fetch your messages.", 'warn')
 			},
 			complete: function(){
-				console.log('completed')
+				//console.log('completed')
 				
 			}})
-			console.log('Fetch ajax sent')
+			//console.log('Fetch ajax sent')
         
     }
 })
@@ -117,22 +117,22 @@ App.collections.FileMessages = Backbone.Collection.extend({
         url = this.url
         url = this.url
         data = {}
-		console.log(this.at(-1))
+		//console.log(this.at(-1))
         if(this.length){
             data['fetch_from'] = this.at(-1).get('timestamp').toISOString()
         }
-		console.log(data['fetch_from'])
+		//console.log(data['fetch_from'])
 		that = this
 		
 		this.ajaxObj = $.ajax({
-			url, 
-			data, 
+			url: url,
+			data: data,
 			success: function(data, status){	
 					_.forEach(data, function(obj){
-							console.log(obj)
+							//console.log(obj)
 							that.add(new App.models.FileMessage(obj, {parse: true}))
 						}, that)
-						console.log('Length '+that.size())
+						//console.log('Length '+that.size())
 						that.ajaxObj = null
 			},
 			error: function(){
@@ -140,7 +140,7 @@ App.collections.FileMessages = Backbone.Collection.extend({
 				that.ajaxObj = null
 			}
 		})
-		console.log('Length '+this.size())
+		//console.log('Length '+this.size())
 	}
 	
 })
@@ -156,6 +156,7 @@ App.views.TextMessage = Backbone.View.extend({
         model = this.model
 		text = model.get('text')
         joker_name = model.get('joker_name')
+        console.log(model)
         if(text.charAt(0) == ':' && text.charAt(-1) == ':'){
             template = this.template.infoMessage
             text = "".slice(1, -1)
@@ -166,7 +167,7 @@ App.views.TextMessage = Backbone.View.extend({
 		}else{
             template = this.template.message
 			this.className = 'message'
-		}this.$el.html(template({text, joker_name}))
+		}this.$el.html(template({text: text, joker_name: joker_name}))
 		this.$el.attr('class', this.className)
 		return this.$el
     }
@@ -192,7 +193,7 @@ App.views.FileMessage = Backbone.View.extend({
 		else
 			template = this.titleTemplate
 		data = model.attributes
-		console.log(data)
+		//console.log(data)
 		data['size'] = model.bytesToString(data['size'])
 		
 		this.$el.html(template(data))
@@ -212,8 +213,8 @@ App.views.TextMessages = Backbone.View.extend({
 		this.$el.html()
 	},
 	append: function(model){
-		console.log('Appending')
-		this.$el.append(new App.views.TextMessage({model}).render())
+		//console.log('Appending')
+		this.$el.append(new App.views.TextMessage({model: model}).render())
 	}
 })
  // VIEW FILE MESSAGE
@@ -223,8 +224,8 @@ App.views.FileMessages = Backbone.View.extend({
         this.$el.html()
     },
     append: function(model){
-        console.log('Appending')
-		this.$el.append(new App.views.FileMessage({model}).render())
+        //console.log('Appending')
+		this.$el.append(new App.views.FileMessage({model: model}).render())
     }
 })
 App.routers.Router = Backbone.Router.extend({
@@ -235,15 +236,15 @@ App.routers.Router = Backbone.Router.extend({
         'account': 'account',
     },
     'text-messages': function(){
-        console.log('router :: text-messages')
+        //console.log('router :: text-messages')
         this.showTextMessages()
     },
     'file-messages': function(){
-        console.log('router :: file-messages')
+        //console.log('router :: file-messages')
         this.showFileMessages()
     },
     'account': function(){
-        console.log('router :: account')
+        //console.log('router :: account')
         this.showAccount()
     },
     // Text messages
@@ -288,22 +289,22 @@ App.routers.Router = Backbone.Router.extend({
     
 })
 function fetchTextMessages(){
-	console.log('Trying to fetch text messages')
+	//console.log('Trying to fetch text messages')
 	instance.collections.TextMessages.fetch()
 } 
 function fetchFileMessages(){
-	console.log('Trying to fetch file messages')
+	//console.log('Trying to fetch file messages')
 	instance.collections.FileMessages.fetch()
 }
 function sendTextMessage(e){
     // Take the text from the input box, send it
     text = $('#text-message-input').val()
     if(text == "") return;
-    console.log('sending '+text)
-    data = {text}
+    //console.log('sending '+text)
+    data = {text: text}
     $.ajax({
 		url: 'api/send', 
-		data, 
+		data: data,
 		success: function(data, status){
 			$('#text-message-input').val('')
 			fetchTextMessages()
@@ -319,18 +320,18 @@ function sendFileMessage(e){
     // Take the text from the input box, send it
     
 	var submitButton = $('#file-message-submit')
-	submitButton.hide()
+
 	console.log('Trying to send file message')
 	
 	$.ajax({
-		url: 'api/upload',
+		url: '/api/upload',
 		type: 'post',
 		data: new FormData($('#file-message-form')[0]),
 		processData: false,
 		cache: false,
 		contentType: false,
 		success: function(){
-			showToast("File sent!", 'success')
+			showToast("File sent", 'success')
 			fetchFileMessages()
 		},
 		error: function(){
@@ -367,6 +368,7 @@ function init_file_form(){
 $(document).ready(function(){
     instance.joker = new App.models.Joker()
     instance.joker.fetch()
+	//console.log(instance.joker)
     instance.collections.TextMessages = new App.collections.TextMessages()
     instance.collections.FileMessages = new App.collections.FileMessages()
     instance.views.TextMessages = new App.views.TextMessages({el: '#text-messages-content', collection: instance.collections.TextMessages})
@@ -387,16 +389,12 @@ $(document).ready(function(){
 	
 	$('#file-message-form').submit(sendFileMessage)
 	
-	console.log($('').qrcode)
+	//console.log($('').qrcode)
 	$('#qrcode').qrcode({
-		/*A hack: Use the element holding the flare's name to get the flare name*/
-		/*TODO: This ain't right. Add support in the API to get the current session's details.*/
-		
-		text: 'http://' + $(location).attr('hostname') + '/join?flare="{}"'.replace('{}', $('#flarename').text())
+		text: 'http://' + $(location).attr('hostname') + '/join?flare="{}"'.replace('{}', instance.joker.flare.name)
 	})
-	showToast('', '')
-	console.log('Setup done !')
-	
+	showToast('Getting the latest ...', 'white')
+	//console.log('Setup done !')
 	
 })
 

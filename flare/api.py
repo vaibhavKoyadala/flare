@@ -140,18 +140,14 @@ def upload(request):
     file_extension = file.name.rpartition('.')[-1]
     joker = request.joker
 
-    print file_extension
+    print file_extension, file.size
     if file_extension in ['jpeg', 'jpg', 'png']:
         model = models.ImageMessage(joker=joker, image=file, title=file.name)
         model.save()
     else:
         model = models.FileMessage(joker=joker, file=file, title=file.name)
         model.save()
-    return HttpResponse('<h1>{0}</h1>'.format(model.title)+
-                        '<a href="resource/image/{0}">Image</a>'.format(model.title)+'<br>'+
-                        '<a href="resource/thumbnail/{0}">Thumbnail</a>'.format(model.title)+'<br>'+
-                        '<a href="resource/other/{0}">Other</a>'.format(model.title))
-
+    return HttpResponse(status=status.HTTP_200_OK)
 
 @csrf_exempt
 @joker_required(on_fail=raise_403)
