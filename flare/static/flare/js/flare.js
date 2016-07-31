@@ -391,7 +391,8 @@ $(document).ready(function(){
 	
 	//console.log($('').qrcode)
 	$('#qrcode').qrcode({
-		text: 'http://' + $(location).attr('hostname') + '/join?flare="{}"'.replace('{}', instance.joker.flare.name)
+		text: 'http://{host}/join?flare={flare}'.replace('{host}', $(location).attr('hostname')).
+        replace('{flare}', instance.joker.flare.name)
 	})
 	showToast('Getting the latest ...', 'white')
 	//console.log('Setup done !')
