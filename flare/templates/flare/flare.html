@@ -85,8 +85,8 @@
             height: 80%;
             overflow-y: scroll;
         }
-        #chat-body::-webkit-scrollbar {
-            display: none;
+        .touch{
+			-webkit-overflow-scrolling: touch;
         }
         #chat-footer{
             
@@ -285,7 +285,7 @@
         </div>
         
 
-        <div id="chat-body">
+        <div id="chat-body" class="touch">
             <div id="text-messages-content">
 			<!--
                 <div class="message">
